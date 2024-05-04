@@ -2,10 +2,11 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
-// Express / ejs packages
+// Package imports
 const express = require('express')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
+const bodyParser = require('body-parser')
 
 // Connect routers to server
 const indexRouter = require('./routes/index')
@@ -17,9 +18,11 @@ app.use(express.static('public'))
 app.use(express.static(path.join(__dirname + 'public')))
 
 app.set('view engine', 'ejs')
-app.set('views', __dirname + '/views')
+app.set('views', path.join(__dirname, 'views'));
 app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
+app.use(express.static('public'))
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
 
 // Connect to MongoDB
@@ -47,7 +50,7 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log("Connected to mongoose");
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
