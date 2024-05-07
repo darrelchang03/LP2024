@@ -11,6 +11,7 @@ const bodyParser = require('body-parser')
 // Connect routers to server
 const indexRouter = require('./routes/index')
 const authorRouter = require('./routes/authors')
+const bookRouter = require('./routes/books')
 
 // Setting express settings
 var path = require('path')
@@ -26,39 +27,16 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
 
 // Connect to MongoDB
-// const mongoose = require('mongoose')
-// const { dir } = require('console')
-// mongoose.connect(process.env.DATABASE_URL, { 
-//      })
-// const db = mongoose.connection
-// db.on('error', error => console.error(error))
-// db.once('open', () => console.log('Connected to mongoose'))
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://dbUser:Black10280821!cedarrocket@learningproject.lpw241q.mongodb.net/?retryWrites=true&w=majority&appName=LearningProject";
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Connected to mongoose");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
+const mongoose = require('mongoose')
+const { dir } = require('console')
+mongoose.connect(process.env.DATABASE_URL, { 
+     })
+const db = mongoose.connection
+db.on('error', error => console.error(error))
+db.once('open', () => console.log('Connected to mongoose'))
 
 app.use('/', indexRouter)
 app.use('/authors', authorRouter)
+app.use('/books', bookRouter)
 
 app.listen(process.env.PORT || 3000)
