@@ -5,6 +5,7 @@ const path = require('path')
 const fs = require('fs')
 const Author = require('../models/author')
 const Book = require('../models/book')
+const { Query } = require('mongoose')
 const uploadPath = path.join('public', Book.coverImageBasePath)
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
 const upload = multer({
@@ -15,8 +16,21 @@ const upload = multer({
 })
 
 // All Books Route
-router.get('/', (req, res) => {
-    res.send('All Books')
+router.get('/', async (req, res) => {
+    let query = Book.find()
+    if (req.query.title !== null && req.query.title !== '') {
+        reg = new RegExp(req.query.title, 'i')
+        query = query.regex('title', reg)
+    }
+    try {   
+        const books = await query.exec()
+        res.render('books/index', {
+            books: books,
+            searchOptions: req.query
+        })
+    } catch {
+        res.redirect('/')
+    }
 }) 
 
 // New Book Route
