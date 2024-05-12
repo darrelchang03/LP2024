@@ -20,7 +20,6 @@ const authorSchema = new mongoose.Schema({
 //         }
 //     })
 // })
-
 authorSchema.pre('deleteOne', async (req, res, next) => {
     try {
         await Book.find({ author : this.id})
