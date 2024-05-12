@@ -7,6 +7,7 @@ const express = require('express')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
 const bodyParser = require('body-parser')
+const methodOveride = require('method-override')
 
 // Connect routers to server
 const indexRouter = require('./routes/index')
@@ -24,6 +25,7 @@ app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
+app.use(methodOveride('_method'))
 
 
 // Connect to MongoDB
