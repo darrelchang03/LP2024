@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {   
         const author = await Author.findById(req.params.id)
-        const books = await Book.find({ author: author }).limit(6).exec()
+        const books = await Book.find({ author: author }).limit(6).sort({ publishDate : -1 }).exec()
         res.render('authors/show', { 
             author : author, 
             booksByAuthor : books 
@@ -89,18 +89,21 @@ router.put('/:id', async (req, res) => {
 // Delete Author route
 router.delete('/:id', async (req, res) => {
     let author
+    let books
     try {
         author = await Author.findById(req.params.id)
-        await author.deleteOne()
-        res.redirect('/authors')
-    } catch {
-        if (author == null) {
-            res.redirect('/')
+        books = await Book.find({ author : author })
+        if (books.length == 0) {
+            await author.deleteOne()
+            res.redirect('/authors')
         } else {
-            // Author still has books associated with them
             res.redirect(`/authors/${author.id}`)
         }
+    } catch (err){
+        console.log(err)
+        res.redirect('/authors')
     }
 })
+
 
 module.exports = router

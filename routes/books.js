@@ -46,7 +46,9 @@ router.post('/', async (req, res) => {
         pageCount: req.body.pageCount,
         description: req.body.description
     })
-    saveCover(book, req.body.cover)
+    if (req.body.cover != null && req.body.cover != '') {
+        saveCover(book, req.body.cover)
+    }
 
     try{
         const newBook = await book.save()
@@ -121,6 +123,7 @@ router.delete('/:id', async (req, res) => {
       }
     }
   })
+
 
 async function renderNewPage(res, book, hasError=false) {
     renderFormPage(res, book, 'new', hasError)
